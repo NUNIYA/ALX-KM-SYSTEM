@@ -19,7 +19,7 @@ const Feedback = () => {
   const fetchFeedback = async () => {
     setLoading(true);
     try {
-      const res = await axios.get('http://localhost:5001/api/feedback');
+      const res = await axios.get(''+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/feedback');
       setFeedbacks(res.data);
     } catch (err) {
       console.error(err);
@@ -34,7 +34,7 @@ const Feedback = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5001/api/feedback', formData);
+      await axios.post(''+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/feedback', formData);
       setFormData({ name: '', course: 'Software Engineering', rating: 5, comment: '' });
       fetchFeedback();
     } catch (err) {

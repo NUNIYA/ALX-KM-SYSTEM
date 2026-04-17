@@ -25,7 +25,7 @@ const ExpertDeploymentModal = ({ isOpen, onClose, onSuccess, isDark }) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.post('http://localhost:5001/api/auth/register', formData);
+      await axios.post(''+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/auth/register', formData);
       onSuccess();
       onClose();
     } catch (err) { alert(err.response?.data?.message || 'Deployment failed'); }
@@ -401,7 +401,7 @@ const Experts = () => {
   const fetchExperts = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`http://localhost:5001/api/auth/experts?skill=${search}`);
+      const res = await axios.get(`'+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/auth/experts?skill=${search}`);
       setExperts(res.data);
     } catch (err) {
       console.error(err);
@@ -417,7 +417,7 @@ const Experts = () => {
   const handleDeleteExpert = async (id) => {
     if (!window.confirm('De-index this personnel file permanently?')) return;
     try {
-      await axios.delete(`http://localhost:5001/api/auth/users/${id}`);
+      await axios.delete(`'+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/auth/users/${id}`);
       fetchExperts();
     } catch (err) { alert(err.response?.data?.message || 'De-indexing failed'); }
   };
