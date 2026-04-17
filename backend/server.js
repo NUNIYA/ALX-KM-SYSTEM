@@ -24,17 +24,15 @@ connectDB();
 const app = express();
 
 // Middleware
-const allowedOrigins = [
-  'http://localhost:5173',
-  'http://localhost:5174',
-  'http://127.0.0.1:5173',
-  'http://127.0.0.1:5174',
-];
-
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (Postman, curl, mobile apps)
-    if (!origin || allowedOrigins.includes(origin)) {
+    // Allow requests with no origin (Postman, curl, server-to-server)
+    if (!origin) return callback(null, true);
+    // Allow localhost (any port) and any *.vercel.app domain
+    if (
+      /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin) ||
+      /\.vercel\.app$/.test(origin)
+    ) {
       return callback(null, true);
     }
     callback(new Error('Not allowed by CORS'));
