@@ -21,7 +21,7 @@ const StudentRepository = () => {
   const fetchResources = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`http://localhost:5000/api/resources${search ? `?search=${search}` : ''}`);
+      const res = await axios.get(`http://localhost:5001/api/resources${search ? `?search=${search}` : ''}`);
       setResources(res.data);
     } catch (err) { console.error(err); }
     setLoading(false);
@@ -29,7 +29,7 @@ const StudentRepository = () => {
 
   const handleDownloadFile = async (fileUrl, title) => {
     try {
-      const response = await fetch(`http://localhost:5000/${fileUrl}`);
+      const response = await fetch(`http://localhost:5001/${fileUrl}`);
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
@@ -48,13 +48,13 @@ const StudentRepository = () => {
 
   const handleUpvote = async (id) => {
     try {
-      await axios.patch(`http://localhost:5000/api/resources/${id}/upvote`);
+      await axios.patch(`http://localhost:5001/api/resources/${id}/upvote`);
       setResources(p => p.map(r => r._id === id ? { ...r, helpfulVotes: (r.helpfulVotes || 0) + 1 } : r));
     } catch (err) { console.error(err); }
   };
 
   const handleBookmark = async (id) => {
-    try { await axios.patch(`http://localhost:5000/api/resources/${id}/bookmark`); fetchResources(); }
+    try { await axios.patch(`http://localhost:5001/api/resources/${id}/bookmark`); fetchResources(); }
     catch (err) { console.error(err); }
   };
 
@@ -210,7 +210,7 @@ const StudentRepository = () => {
 
               {/* Dark Hover Action Bar at Bottom */}
               <div className="grid grid-cols-2">
-                <a href={`http://localhost:5000/${res.fileUrl}`} target="_blank" rel="noreferrer" 
+                <a href={`http://localhost:5001/${res.fileUrl}`} target="_blank" rel="noreferrer" 
                    className="flex items-center justify-center gap-2 py-5 bg-blue-600 hover:bg-blue-500 text-white text-sm font-black uppercase tracking-wider transition-colors">
                   <Eye className="w-5 h-5" /> Read
                 </a>

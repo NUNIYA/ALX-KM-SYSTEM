@@ -18,7 +18,7 @@ const Login = () => {
     setLoading(true);
     setError('');
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', formData);
+      const res = await axios.post('http://localhost:5001/api/auth/login', formData);
       login(res.data);
       if (res.data.role === 'admin') navigate('/');
       else if (res.data.role === 'facilitator') navigate('/facilitator-dashboard');
