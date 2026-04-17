@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+:root {
+  --primary: #0066FF;
+  --black: #0A0A0A;
+  --slate-900: #0f172a;
+  --background: #FFFFFF;
+  --formal-sans: 'Inter', sans-serif;
+  --formal-serif: 'Inter', sans-serif; /* Redirected to Sans for "Normal" style */
+}
+
+body {
+  @apply bg-white text-slate-900;
+  font-family: var(--formal-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Normal Header Standards */
+h1, h2, h3, h4, .formal-header {
+  font-family: var(--formal-sans);
+  @apply font-bold tracking-tight;
+  font-style: normal; /* Force normal style */
+}
+
+/* Platform-wide medium size constraints */
+.text-9xl, .text-8xl, .text-7xl {
+  @apply !text-4xl md:!text-5xl lg:!text-6xl;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.text-6xl {
+  @apply !text-3xl md:!text-4xl lg:!text-5xl;
+}
+
+.text-5xl {
+  @apply !text-2xl md:!text-3xl lg:!text-4xl;
+}
+
+
+
+/* Card Visual Tokens */
+.visual-card {
+  @apply bg-white rounded-[2rem] border border-slate-100 shadow-sm transition-all duration-700 overflow-hidden;
+}
+
+.visual-card:hover {
+  @apply shadow-4xl -translate-y-2;
+}
+
+.glass-formal {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Scrollbar Sophistication */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background: #0066FF;
+  border-radius: 10px;
+}
