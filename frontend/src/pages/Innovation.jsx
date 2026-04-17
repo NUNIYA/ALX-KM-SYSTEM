@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_BASE from '../utils/api';
 import { 
   Plus, Search, TrendingUp, Lightbulb, Brain, Rocket, X, Tag, User, Clock, ShieldCheck, Terminal, Info 
 } from 'lucide-react';
@@ -33,7 +34,7 @@ const IdeaPanel = ({ idea, onClose, isDark, likeIdea, updateIdeaStatus, user }) 
       
       {/* Hero Cover */}
       <div className="relative h-[35vh] shrink-0 bg-black overflow-hidden">
-        <img src={idea.imageUrl ? `'+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/${idea.imageUrl}` : getConceptImage(idea.category)} alt={idea.title} className="absolute inset-0 w-full h-full object-cover opacity-60" />
+        <img src={idea.imageUrl ? `${API_BASE}/${idea.imageUrl}` : getConceptImage(idea.category)} alt={idea.title} className="absolute inset-0 w-full h-full object-cover opacity-60" />
         <div className={`absolute inset-0 bg-gradient-to-t via-transparent to-transparent ${isDark ? 'from-[#050505]' : 'from-white/90'}`} />
         
         <button onClick={onClose} className="absolute top-5 right-5 p-2.5 rounded-full bg-white/10 backdrop-blur hover:bg-white hover:text-black text-white transition-all">
@@ -133,7 +134,7 @@ const Innovation = () => {
   const fetchIdeas = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(''+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/ideas');
+      const res = await axios.get(`${API_BASE}/api/ideas`);
       setIdeas(res.data);
     } catch (err) { console.error(err); }
     setLoading(false);
@@ -151,7 +152,7 @@ const Innovation = () => {
           submitData.append(key, formData[key]);
         }
       });
-      await axios.post(''+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/ideas', submitData);
+      await axios.post(`${API_BASE}/api/ideas`, submitData);
       setFormData({ title: '', description: '', category: 'Software Engineering', tags: '', image: null });
       setShowPitchForm(false);
       fetchIdeas();
@@ -162,7 +163,7 @@ const Innovation = () => {
 
   const likeIdea = async (id) => {
     try {
-      await axios.patch(`'+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/ideas/${id}/like`);
+      await axios.patch(`${API_BASE}/api/ideas/${id}/like`);
       setIdeas(prev => prev.map(i => i._id === id ? { ...i, likes: i.likes + 1 } : i));
       if (selectedIdea?._id === id) setSelectedIdea({ ...selectedIdea, likes: selectedIdea.likes + 1 });
     } catch (err) { console.error(err); }
@@ -170,7 +171,7 @@ const Innovation = () => {
 
   const updateIdeaStatus = async (id, newStatus) => {
     try {
-      await axios.patch(`'+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/ideas/${id}/status`, { status: newStatus }, {
+      await axios.patch(`${API_BASE}/api/ideas/${id}/status`, { status: newStatus }, {
          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       setIdeas(prev => prev.map(i => i._id === id ? { ...i, status: newStatus } : i));
@@ -241,7 +242,7 @@ const Innovation = () => {
                   ${isDark ? 'border-white/10 group-hover:border-sky-500/50' : 'bg-white border-slate-200 group-hover:border-sky-400'}`}>
 
                   {/* Photo Thumbnail */}
-                  <img src={idea.imageUrl ? `'+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/${idea.imageUrl}` : getConceptImage(idea.category)} className="absolute inset-0 w-full h-full object-cover object-top opacity-30 grayscale group-hover:grayscale-0 group-hover:scale-105 group-hover:opacity-80 transition-all duration-700" />
+                  <img src={idea.imageUrl ? `${API_BASE}/${idea.imageUrl}` : getConceptImage(idea.category)} className="absolute inset-0 w-full h-full object-cover object-top opacity-30 grayscale group-hover:grayscale-0 group-hover:scale-105 group-hover:opacity-80 transition-all duration-700" />
                   <div className={`absolute inset-x-0 bottom-0 h-3/4 bg-gradient-to-t via-transparent to-transparent ${isDark ? 'from-[#050505]' : 'from-slate-900/90'}`} />
                   
                   {/* Category Pill Top Left */}

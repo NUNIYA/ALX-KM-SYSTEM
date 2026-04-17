@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_BASE from '../utils/api';
 import {
   Search, AlertCircle, Trash2, Settings,
   ShieldAlert, FileWarning, Eye, EyeOff, User, Calendar,
@@ -32,7 +33,7 @@ const UploadResourceModal = ({ isOpen, onClose, onSuccess, isDark }) => {
     data.append('file', file);
 
     try {
-      await axios.post(''+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/resources', data, {
+      await axios.post(`${API_BASE}/api/resources`, data, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       onSuccess();
@@ -102,7 +103,7 @@ const AdminRepository = () => {
   const fetchResources = async () => {
     setLoading(true);
     try {
-      let url = `'+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/resources?search=${search}`;
+      let url = `${API_BASE}/api/resources?search=${search}`;
       if (activeFilter === 'Pending')    url += '&filter=pending';
       if (activeFilter === 'Flagged')    url += '&filter=flagged';
       if (activeFilter === 'Restricted') url += '&filter=restricted';
@@ -114,7 +115,7 @@ const AdminRepository = () => {
 
   const handleDownloadFile = async (fileUrl, title) => {
     try {
-      const response = await fetch(`'+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/${fileUrl}`);
+      const response = await fetch(`${API_BASE}/${fileUrl}`);
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
@@ -133,23 +134,23 @@ const AdminRepository = () => {
   }, [search, activeFilter]);
 
   const handleStatus = async (id, status) => {
-    try { await axios.patch(`'+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/resources/${id}`, { status }); fetchResources(); }
+    try { await axios.patch(`${API_BASE}/api/resources/${id}`, { status }); fetchResources(); }
     catch (err) { console.error(err); }
   };
 
   const handleDelete = async (id) => {
     if (!window.confirm('Permanently de-archive this asset?')) return;
-    try { await axios.delete(`'+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/resources/${id}`); fetchResources(); }
+    try { await axios.delete(`${API_BASE}/api/resources/${id}`); fetchResources(); }
     catch (err) { console.error(err); }
   };
 
   const handleVisibility = async (id, visibility) => {
-    try { await axios.patch(`'+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/resources/${id}`, { visibility }); setVisMenuId(null); fetchResources(); }
+    try { await axios.patch(`${API_BASE}/api/resources/${id}`, { visibility }); setVisMenuId(null); fetchResources(); }
     catch (err) { console.error(err); }
   };
 
   const handleFlag = async (id, currentFlag) => {
-     try { await axios.patch(`'+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/resources/${id}`, { flagged: !currentFlag }); fetchResources(); }
+     try { await axios.patch(`${API_BASE}/api/resources/${id}`, { flagged: !currentFlag }); fetchResources(); }
      catch (err) { console.error(err); }
   };
 
@@ -308,7 +309,7 @@ const AdminRepository = () => {
                            </>
                          ) : (
                            <>
-                              <a href={`'+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/${res.fileUrl}`} target="_blank" rel="noreferrer" className={`py-7 text-[10px] font-black uppercase tracking-[0.3em] flex items-center justify-center gap-3 transition-all ${isDark ? 'bg-[#15171e] text-white border-r border-white/5 hover:bg-primary' : 'bg-slate-100 text-black border-r border-slate-200 hover:bg-black hover:text-white'}`}>
+                              <a href={`${API_BASE}/${res.fileUrl}`} target="_blank" rel="noreferrer" className={`py-7 text-[10px] font-black uppercase tracking-[0.3em] flex items-center justify-center gap-3 transition-all ${isDark ? 'bg-[#15171e] text-white border-r border-white/5 hover:bg-primary' : 'bg-slate-100 text-black border-r border-slate-200 hover:bg-black hover:text-white'}`}>
                                  <Eye className="w-5 h-5" /> Read
                               </a>
                               <button onClick={() => handleDownloadFile(res.fileUrl, res.title)} className={`py-7 bg-primary text-white text-[10px] font-black uppercase tracking-[0.3em] flex items-center justify-center gap-3 hover:bg-black transition-all`}>

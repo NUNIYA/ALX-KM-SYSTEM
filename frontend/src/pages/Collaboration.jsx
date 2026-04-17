@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_BASE from '../utils/api';
 import { 
   MessageSquare, Send, User, Calendar, MessageCircle, Lock, PlusCircle, Tag, Folder, Zap, ChevronRight, Globe, Sparkles, X, Terminal, Filter, Eye, Activity, Disc, ChevronUp, Clock, Flame
 } from 'lucide-react';
@@ -45,7 +46,7 @@ const PostPanel = ({ post, onClose, isDark, user }) => {
 
   const fetchComments = async () => {
     try {
-      const res = await axios.get(`'+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/comments?targetType=post&targetId=${post._id}`, {
+      const res = await axios.get(`${API_BASE}/api/comments?targetType=post&targetId=${post._id}`, {
          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       setComments(res.data);
@@ -59,7 +60,7 @@ const PostPanel = ({ post, onClose, isDark, user }) => {
     if (!replyText.trim()) return;
     if (!user) { alert("Initialization Denied: Please login to interface with the network."); return; }
     try {
-      await axios.post(''+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/comments', 
+      await axios.post(`${API_BASE}/api/comments`, 
         { body: replyText, targetType: 'post', targetId: post._id },
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }}
       );
@@ -199,7 +200,7 @@ const Collaboration = () => {
   const fetchPosts = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(''+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/posts');
+      const res = await axios.get(`${API_BASE}/api/posts`);
       setPosts(res.data);
     } catch (err) { console.error(err); }
     setLoading(false);
@@ -211,7 +212,7 @@ const Collaboration = () => {
     e.preventDefault();
     if (!user) { alert("Initialization Denied: You must be authenticated to create a network broadcast."); return; }
     try {
-      await axios.post(''+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/posts', formData, {
+      await axios.post(`${API_BASE}/api/posts`, formData, {
          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       setFormData({ title: '', content: '', category: 'Software Engineering', postType: 'Question', tags: '', author: user ? user.name : 'ALX Student' });

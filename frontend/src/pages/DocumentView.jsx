@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import API_BASE from '../utils/api';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
@@ -26,7 +27,7 @@ const DocumentView = () => {
 
   const fetchDoc = async () => {
     try {
-      const res = await axios.get(`'+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/resources/${id}`);
+      const res = await axios.get(`${API_BASE}/api/resources/${id}`);
       setDoc(res.data);
     } catch (err) {
       console.error(err);
@@ -36,7 +37,7 @@ const DocumentView = () => {
 
   const fetchComments = async () => {
     try {
-      const res = await axios.get(`'+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/comments?targetType=resource&targetId=${id}`);
+      const res = await axios.get(`${API_BASE}/api/comments?targetType=resource&targetId=${id}`);
       setComments(res.data);
     } catch (err) { console.error(err); }
   };
@@ -48,14 +49,14 @@ const DocumentView = () => {
 
   const handleLike = async () => {
     try {
-      const res = await axios.patch(`'+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/resources/${id}/like`);
+      const res = await axios.patch(`${API_BASE}/api/resources/${id}/like`);
       setDoc(res.data);
     } catch (err) { console.error(err); }
   };
 
   const handleBookmark = async () => {
     try {
-      const res = await axios.patch(`'+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/resources/${id}/bookmark`);
+      const res = await axios.patch(`${API_BASE}/api/resources/${id}/bookmark`);
       setDoc(res.data);
     } catch (err) { console.error(err); }
   };
@@ -64,7 +65,7 @@ const DocumentView = () => {
     e.preventDefault();
     if (!commentBody.trim()) return;
     try {
-      await axios.post(''+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/comments', {
+      await axios.post(`${API_BASE}/api/comments`, {
         body: commentBody,
         targetType: 'resource',
         targetId: id,
@@ -78,7 +79,7 @@ const DocumentView = () => {
 
   const handleMarkBestAnswer = async (commentId) => {
     try {
-      await axios.patch(`'+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/comments/${commentId}/best-answer`, {
+      await axios.patch(`${API_BASE}/api/comments/${commentId}/best-answer`, {
         targetType: 'resource', targetId: id
       });
       fetchComments();
@@ -87,7 +88,7 @@ const DocumentView = () => {
 
   const handleUpvoteComment = async (commentId) => {
     try {
-      await axios.patch(`'+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/comments/${commentId}/upvote`);
+      await axios.patch(`${API_BASE}/api/comments/${commentId}/upvote`);
       fetchComments();
     } catch (err) { console.error(err); }
   };
@@ -150,7 +151,7 @@ const DocumentView = () => {
               <Bookmark className="w-4 h-4 mr-2" /> {isBookmarked ? 'Saved' : 'Bookmark'}
             </button>
             {doc.fileUrl && (
-              <a href={`'+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/${doc.fileUrl}`} download className={`flex items-center px-6 py-3 rounded-full text-[10px] font-black uppercase tracking-widest border transition-all ${isDark ? 'border-white/10 text-white hover:border-emerald-500 hover:text-emerald-500' : 'border-slate-200 text-black hover:border-emerald-500 hover:text-emerald-500'}`}>
+              <a href={`${API_BASE}/${doc.fileUrl}`} download className={`flex items-center px-6 py-3 rounded-full text-[10px] font-black uppercase tracking-widest border transition-all ${isDark ? 'border-white/10 text-white hover:border-emerald-500 hover:text-emerald-500' : 'border-slate-200 text-black hover:border-emerald-500 hover:text-emerald-500'}`}>
                 <Download className="w-4 h-4 mr-2" /> Download
               </a>
             )}

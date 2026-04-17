@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import API_BASE from '../utils/api';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { LogIn, Mail, Lock, AlertCircle, ArrowRight, ShieldCheck, Zap, Globe, Sparkles } from 'lucide-react';
@@ -18,7 +19,7 @@ const Login = () => {
     setLoading(true);
     setError('');
     try {
-      const res = await axios.post(''+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/auth/login', formData);
+      const res = await axios.post(`${API_BASE}/api/auth/login`, formData);
       login(res.data);
       if (res.data.role === 'admin') navigate('/');
       else if (res.data.role === 'facilitator') navigate('/facilitator-dashboard');

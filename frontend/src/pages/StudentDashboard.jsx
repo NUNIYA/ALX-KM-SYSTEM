@@ -8,6 +8,7 @@ import {
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
+import API_BASE from '../utils/api';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 import {
@@ -39,12 +40,12 @@ const StudentDashboard = () => {
       const token = localStorage.getItem('token');
       const headers = { Authorization: `Bearer ${token}` };
       const [resR, resL, resE, resP, resI, resS] = await Promise.all([
-        axios.get(''+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/resources'),
-        axios.get(''+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/lessons'),
-        axios.get(''+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/auth/experts'),
-        axios.get(''+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/posts'),
-        axios.get(''+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/ideas'),
-        axios.get(''+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/auth/stats', { headers })
+        axios.get(`${API_BASE}/api/resources`),
+        axios.get(`${API_BASE}/api/lessons`),
+        axios.get(`${API_BASE}/api/auth/experts`),
+        axios.get(`${API_BASE}/api/posts`),
+        axios.get(`${API_BASE}/api/ideas`),
+        axios.get(`${API_BASE}/api/auth/stats`, { headers })
       ]);
       const trackRes = resR.data.filter(r => r.category.includes(user?.learningTrack || 'General'));
       setResources(trackRes.length > 0 ? trackRes : resR.data);
@@ -67,7 +68,7 @@ const StudentDashboard = () => {
   const handleLessonSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(''+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/lessons', lessonForm, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
+      await axios.post(`${API_BASE}/api/lessons`, lessonForm, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
       setLessonForm({ title: '', challenge: '', description: '', category: 'Software Engineering', tags: '' });
       setShowLessonForm(false);
       fetchData();
@@ -77,7 +78,7 @@ const StudentDashboard = () => {
   const handleProfileUpdate = async (e) => {
     e.preventDefault();
     try {
-      await axios.patch(''+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/auth/me', profileForm, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
+      await axios.patch(`${API_BASE}/api/auth/me`, profileForm, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
       setShowProfileModal(false);
       window.location.reload();
     } catch (err) { console.error(err); }
@@ -302,7 +303,7 @@ const StudentDashboard = () => {
                 <Zap className="absolute top-4 right-4 w-4 h-4 text-primary opacity-60" />
                 <span className="text-[10px] font-bold uppercase tracking-widest text-primary mb-3 block">Latest</span>
                 <h3 className={`text-sm font-bold leading-snug mb-4 line-clamp-3 ${isDark ? 'text-white' : 'text-white'}`}>{latestResource.title}</h3>
-                <a href={`'+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/${latestResource.fileUrl}`} target="_blank" rel="noreferrer"
+                <a href={`${API_BASE}/${latestResource.fileUrl}`} target="_blank" rel="noreferrer"
                   className="inline-block w-full text-center bg-primary text-white text-xs font-semibold py-2.5 rounded-lg hover:bg-blue-700 transition-all">
                   Study Now
                 </a>
@@ -312,7 +313,7 @@ const StudentDashboard = () => {
               <div key={res._id} className={`${card} group`}>
                 <span className="text-[10px] font-semibold text-primary bg-primary/10 px-2.5 py-1 rounded-full mb-3 inline-block">{res.category}</span>
                 <h4 className={`text-sm font-bold mb-3 line-clamp-2 group-hover:text-primary transition-colors ${isDark ? 'text-white' : 'text-slate-900'}`}>{res.title}</h4>
-                <a href={`'+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/${res.fileUrl}`} target="_blank" rel="noreferrer"
+                <a href={`${API_BASE}/${res.fileUrl}`} target="_blank" rel="noreferrer"
                   className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:gap-2 transition-all">
                   Read Resource <ChevronRight className="w-3.5 h-3.5" />
                 </a>

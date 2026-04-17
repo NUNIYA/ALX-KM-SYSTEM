@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_BASE from '../utils/api';
 import { 
   FileText, Plus, User, Tag, Search, BookOpen, 
   Heart, AlertCircle, Info, X, Zap, Lightbulb, ArrowUpRight, MessageSquare,
@@ -25,7 +26,7 @@ const FeedbackPanel = ({ onClose, isDark, user }) => {
     e.preventDefault();
     setSubmitting(true);
     try {
-      await axios.post(''+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/feedback', formData);
+      await axios.post(`${API_BASE}/api/feedback`, formData);
       alert("Signal Transmitted: Feedback successfully integrated into the system pulse.");
       onClose();
     } catch (err) { console.error(err); }
@@ -121,7 +122,7 @@ const Lessons = () => {
   const fetchLessons = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`'+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/lessons?search=${search}`);
+      const res = await axios.get(`${API_BASE}/api/lessons?search=${search}`);
       setLessons(res.data);
     } catch (err) { console.error(err); }
     setLoading(false);
@@ -133,7 +134,7 @@ const Lessons = () => {
     e.preventDefault();
     setSubmitting(true);
     try {
-      await axios.post(''+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/lessons', formData);
+      await axios.post(`${API_BASE}/api/lessons`, formData);
       setFormData({ title: '', challenge: '', description: '', recommendation: '', category: 'Software Engineering', tags: '' });
       setShowForm(false);
       fetchLessons();
@@ -144,7 +145,7 @@ const Lessons = () => {
 
   const handleUpvote = async (id) => {
     try {
-      await axios.patch(`'+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/lessons/${id}/upvote`);
+      await axios.patch(`${API_BASE}/api/lessons/${id}/upvote`);
       setLessons(prev => prev.map(l => l._id === id ? { ...l, upvotes: l.upvotes + 1 } : l));
     } catch (err) { console.error(err); }
   };

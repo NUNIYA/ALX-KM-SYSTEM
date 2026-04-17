@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_BASE from '../utils/api';
 import { Star, MessageCircle, Send, User, ChevronRight, Zap, Award, Activity, Signal, LayoutDashboard, Terminal, ActivitySquare } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
@@ -19,7 +20,7 @@ const Feedback = () => {
   const fetchFeedback = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(''+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/feedback');
+      const res = await axios.get(`${API_BASE}/api/feedback`);
       setFeedbacks(res.data);
     } catch (err) {
       console.error(err);
@@ -34,7 +35,7 @@ const Feedback = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(''+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/feedback', formData);
+      await axios.post(`${API_BASE}/api/feedback`, formData);
       setFormData({ name: '', course: 'Software Engineering', rating: 5, comment: '' });
       fetchFeedback();
     } catch (err) {

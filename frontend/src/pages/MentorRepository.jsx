@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_BASE from '../utils/api';
 import {
   Search, Plus, Download, Edit3, Eye, Trash2, User, Calendar,
   Send, MessageCircle, X, FileText, Layers, Shield
@@ -28,7 +29,7 @@ const MentorRepository = () => {
   const fetchResources = async () => {
     setLoading(true);
     try {
-      let url = `'+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/resources?search=${search}`;
+      let url = `${API_BASE}/api/resources?search=${search}`;
       if (activeFilter === 'My Docs') url += '&filter=my-docs';
       if (activeFilter === 'Drafts')  url += '&filter=drafts';
       if (activeFilter === 'Pending') url += '&filter=pending';
@@ -40,7 +41,7 @@ const MentorRepository = () => {
 
   const handleDownloadFile = async (fileUrl, title) => {
     try {
-      const response = await fetch(`'+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/${fileUrl}`);
+      const response = await fetch(`${API_BASE}/${fileUrl}`);
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
@@ -63,7 +64,7 @@ const MentorRepository = () => {
     Object.entries(form).forEach(([k, v]) => data.append(k, v));
     if (file) data.append('file', file);
     try {
-      await axios.post(''+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/resources', data, { headers: { 'Content-Type': 'multipart/form-data' } });
+      await axios.post(`${API_BASE}/api/resources`, data, { headers: { 'Content-Type': 'multipart/form-data' } });
       setForm({ title: '', description: '', category: 'SOP', tags: '' });
       setFile(null); setShowUpload(false); fetchResources();
       if (refreshUser) await refreshUser();
@@ -72,13 +73,13 @@ const MentorRepository = () => {
   };
 
   const handlePublish = async (id) => {
-    try { await axios.patch(`'+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/resources/${id}`, { status: 'published' }); fetchResources(); }
+    try { await axios.patch(`${API_BASE}/api/resources/${id}`, { status: 'published' }); fetchResources(); }
     catch (err) { console.error(err); }
   };
 
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this draft permanently?')) return;
-    try { await axios.delete(`'+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/resources/${id}`); fetchResources(); }
+    try { await axios.delete(`${API_BASE}/api/resources/${id}`); fetchResources(); }
     catch (err) { console.error(err); }
   };
 
@@ -230,7 +231,7 @@ const MentorRepository = () => {
 
                 {/* Dramatic Action Bar / Grid */}
                 <div className="grid grid-cols-2 mt-auto">
-                   <a href={`'+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/${res.fileUrl}`} target="_blank" rel="noreferrer" 
+                   <a href={`${API_BASE}/${res.fileUrl}`} target="_blank" rel="noreferrer" 
                       className={`flex items-center justify-center gap-2 py-5 text-sm font-black uppercase tracking-wider transition-colors
                         ${isDark ? 'bg-[#1a1c23] hover:bg-[#252833] text-white border-t border-t-white/5 border-r border-r-white/5' : 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-t border-r border-slate-200'}`}>
                      <Eye className="w-5 h-5" /> Read

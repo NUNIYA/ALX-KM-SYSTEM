@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import API_BASE from '../utils/api';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, AreaChart, Area
@@ -16,7 +17,7 @@ const AdminDashboardContent = ({ user, isDark }) => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await axios.get("'+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/stats");
+        const res = await axios.get(`${API_BASE}/api/stats`);
         setStats(res.data);
       } catch (err) { console.error(err); }
       setLoading(false);

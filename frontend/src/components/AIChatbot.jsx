@@ -3,6 +3,7 @@ import { MessageCircle, X, Send, Bot, Sparkles, BookOpen, User, ChevronRight, Za
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import { useTheme } from '../context/ThemeContext';
+import API_BASE from '../utils/api';
 
 const AIChatbot = () => {
   const { isDark } = useTheme();
@@ -38,7 +39,7 @@ const AIChatbot = () => {
     setLoading(true);
 
     try {
-      const res = await axios.post(''+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/chat', { message: text }, {
+      const res = await axios.post(`${API_BASE}/api/chat`, { message: text }, {
         headers: { 'Content-Type': 'application/json' }
       });
       

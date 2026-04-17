@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import API_BASE from '../utils/api';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { UserPlus, Mail, Lock, User, Zap, ArrowRight, AlertCircle, ShieldCheck, Sparkles, Disc } from 'lucide-react';
@@ -17,7 +18,7 @@ const Register = () => {
     setLoading(true);
     setError('');
     try {
-      const res = await axios.post(''+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/auth/register', formData);
+      const res = await axios.post(`${API_BASE}/api/auth/register`, formData);
       login(res.data);
       navigate('/');
     } catch (err) {

@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
+import API_BASE from '../utils/api';
 
 const AuthContext = createContext(null);
 
@@ -43,7 +44,7 @@ export const AuthProvider = ({ children }) => {
   const refreshUser = async () => {
     try {
       if (token) {
-        const res = await axios.get(''+(import.meta.env.VITE_API_URL || 'http://localhost:5001')+'/api/auth/me');
+        const res = await axios.get(`${API_BASE}/api/auth/me`);
         setUser(res.data);
         localStorage.setItem('user', JSON.stringify(res.data));
       }
