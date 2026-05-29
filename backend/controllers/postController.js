@@ -22,10 +22,20 @@ exports.getPosts = async (req, res) => {
 };
 
 exports.createPost = async (req, res) => {
-  const post = new Post(req.body);
   try {
+    const { title, content, postType, category, tags } = req.body;
+    const post = new Post({
+      title,
+      content,
+      postType,
+      category,
+      tags: typeof tags === 'string' ? tags.split(',').map(t => t.trim()).filter(Boolean) : tags,
+      author: req.user?.name || 'Anonymous',
+      authorId: req.user?._id,
+      authorRole: req.user?.role || 'student'
+    });
     const newPost = await post.save();
-    
+
     if (req.user) {
       await User.findByIdAndUpdate(req.user._id, { $inc: { credits: 5 } });
     }

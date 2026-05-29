@@ -1,5 +1,6 @@
 const Lesson = require('../models/Lesson');
 const User = require('../models/User');
+const escapeRegex = require('../utils/escapeRegex');
 
 exports.getLessons = async (req, res) => {
   try {
@@ -7,9 +8,10 @@ exports.getLessons = async (req, res) => {
     let query = {};
     if (category) query.category = category;
     if (search) {
+      const safeSearch = escapeRegex(search);
       query.$or = [
-        { title: { $regex: search, $options: 'i' } },
-        { tags: { $regex: search, $options: 'i' } }
+        { title: { $regex: safeSearch, $options: 'i' } },
+        { tags: { $regex: safeSearch, $options: 'i' } }
       ];
     }
     

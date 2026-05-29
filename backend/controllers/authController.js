@@ -3,6 +3,7 @@ const Post = require('../models/Post');
 const Idea = require('../models/Idea');
 const Lesson = require('../models/Lesson');
 const jwt = require('jsonwebtoken');
+const escapeRegex = require('../utils/escapeRegex');
 
 exports.getActivity = async (req, res) => {
   try {
@@ -42,8 +43,11 @@ exports.getStats = async (req, res) => {
 };
 
 const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET || 'alx_km_secret_key', {
-    expiresIn: '30d',
+  if (!process.env.JWT_SECRET) {
+    throw new Error('JWT_SECRET environment variable is required');
+  }
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: '7d',
   });
 };
 
@@ -115,7 +119,7 @@ exports.getExperts = async (req, res) => {
     let query = { skills: { $exists: true, $not: { $size: 0 } } };
     
     if (skill) {
-      query.skills = { $regex: skill, $options: 'i' };
+      query.skills = { $regex: escapeRegex(skill), $options: 'i' };
     }
     
     const experts = await User.find(query).select('-password').sort({ createdAt: -1 });

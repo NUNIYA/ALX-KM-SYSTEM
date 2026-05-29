@@ -4,7 +4,11 @@ const User = require('./models/User');
 
 const seedUsers = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI || 'mongodb+srv://kmalx_db_user:KMPORTALALX@cluster0.w9nzivi.mongodb.net/alx_km_db');
+    if (!process.env.MONGO_URI) {
+      console.error('MONGO_URI environment variable is required');
+      process.exit(1);
+    }
+    await mongoose.connect(process.env.MONGO_URI);
     console.log('MongoDB Connected...');
 
     const accounts = [

@@ -64,6 +64,9 @@ exports.upvoteIdea = async (req, res) => {
 
 exports.updateStatus = async (req, res) => {
   try {
+    if (!['facilitator', 'admin'].includes(req.user.role)) {
+      return res.status(403).json({ message: 'Forbidden' });
+    }
     const { status, adminNote } = req.body;
     const idea = await Idea.findById(req.params.id);
     if (!idea) return res.status(404).json({ message: 'Idea not found' });

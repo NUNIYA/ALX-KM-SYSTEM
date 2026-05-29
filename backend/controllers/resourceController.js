@@ -1,5 +1,6 @@
 const Resource = require('../models/Resource');
 const User = require('../models/User');
+const escapeRegex = require('../utils/escapeRegex');
 
 exports.getResources = async (req, res) => {
   try {
@@ -24,7 +25,7 @@ exports.getResources = async (req, res) => {
     // Apply standard filters
     if (category) query.category = category;
     if (search) {
-      const searchRegex = { $regex: search, $options: 'i' };
+      const searchRegex = { $regex: escapeRegex(search), $options: 'i' };
       if (query.$or) {
         query.$and = [
           { $or: query.$or },
@@ -152,7 +153,20 @@ exports.updateResource = async (req, res) => {
        return res.status(403).json({ message: 'Forbidden: Can only edit your own docs' });
     }
 
-    Object.assign(resource, req.body);
+    const { title, description, content, category, tags, status, visibility, track, region, language, cohort, externalLink } = req.body;
+    if (title) resource.title = title;
+    if (description) resource.description = description;
+    if (content !== undefined) resource.content = content;
+    if (category) resource.category = category;
+    if (tags) resource.tags = typeof tags === 'string' ? tags.split(',').map(t => t.trim()).filter(Boolean) : tags;
+    if (status) resource.status = status;
+    if (visibility) resource.visibility = visibility;
+    if (track) resource.track = track;
+    if (region) resource.region = region;
+    if (language) resource.language = language;
+    if (cohort) resource.cohort = cohort;
+    if (externalLink !== undefined) resource.externalLink = externalLink;
+    resource.updatedAt = new Date();
     const updatedResource = await resource.save();
     res.json(updatedResource);
   } catch (error) {

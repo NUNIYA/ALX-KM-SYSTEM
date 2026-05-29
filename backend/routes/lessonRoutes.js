@@ -6,6 +6,6 @@ const authMiddleware = require('../middleware/authMiddleware');
 
 router.get('/', lessonController.getLessons);
 router.post('/', authMiddleware, lessonController.createLesson);
-router.patch('/:id/upvote', lessonController.upvoteLesson);
+router.patch('/:id/upvote', authMiddleware, lessonController.upvoteLesson);
 
 module.exports = router;
