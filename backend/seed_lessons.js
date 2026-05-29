@@ -4,8 +4,11 @@ const Lesson = require('./models/Lesson');
 
 const seedLessons = async () => {
   try {
-    const mongoStr = process.env.MONGO_URI || 'mongodb+srv://kmalx_db_user:KMPORTALALX@cluster0.w9nzivi.mongodb.net/alx_km_db';
-    await mongoose.connect(mongoStr);
+    if (!process.env.MONGO_URI) {
+      console.error('MONGO_URI environment variable is required');
+      process.exit(1);
+    }
+    await mongoose.connect(process.env.MONGO_URI);
     console.log('MongoDB Connected for Lessons...');
 
     await Lesson.deleteMany({}); // Wipe old sample data

@@ -9,7 +9,10 @@ const authMiddleware = async (req, res, next) => {
       return res.status(401).json({ message: "No authentication token, authorization denied" });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'alx_km_secret_key');
+    if (!process.env.JWT_SECRET) {
+      return res.status(500).json({ message: "Server configuration error" });
+    }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.id).select('-password');
     
     if (!user) {

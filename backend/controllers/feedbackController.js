@@ -10,8 +10,9 @@ exports.getFeedback = async (req, res) => {
 };
 
 exports.createFeedback = async (req, res) => {
-  const feedback = new Feedback(req.body);
   try {
+    const { name, course, rating, comment } = req.body;
+    const feedback = new Feedback({ name, course, rating, comment });
     const newFeedback = await feedback.save();
     res.status(201).json(newFeedback);
   } catch (error) {

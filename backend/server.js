@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 const connectDB = require('./config/db');
 
 // Route imports
@@ -23,15 +25,21 @@ connectDB();
 
 const app = express();
 
-// Middleware
+// Security headers
+app.use(helmet());
+
+// CORS — allow only known origins
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || '')
+  .split(',')
+  .map(o => o.trim())
+  .filter(Boolean);
+
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (Postman, curl, server-to-server)
     if (!origin) return callback(null, true);
-    // Allow localhost (any port) and any *.vercel.app domain
     if (
       /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin) ||
-      /\.vercel\.app$/.test(origin)
+      allowedOrigins.includes(origin)
     ) {
       return callback(null, true);
     }
@@ -48,7 +56,18 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.json());
+// Rate limiting on auth endpoints
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: 'Too many requests, please try again later' }
+});
+app.use('/api/auth/login', authLimiter);
+app.use('/api/auth/register', authLimiter);
+
+app.use(express.json({ limit: '1mb' }));
 
 // Serve uploaded files as static assets
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

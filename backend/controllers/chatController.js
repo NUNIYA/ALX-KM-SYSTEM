@@ -1,6 +1,7 @@
 const Resource = require('../models/Resource');
 const User = require('../models/User');
 const Lesson = require('../models/Lesson');
+const escapeRegex = require('../utils/escapeRegex');
 
 // AURA Intelligence Processing Engine
 exports.processChat = async (req, res) => {
@@ -18,10 +19,11 @@ exports.processChat = async (req, res) => {
     
     // INTENT: Knowledge Extraction (Resources)
     else if (query.includes("resource") || query.includes("file") || query.includes("book") || query.includes("document") || query.includes("learn") || query.includes("study") || query.includes("engineering") || query.includes("data")) {
+      const safeQuery = escapeRegex(query);
       const resourcesFound = await Resource.find({ 
         $or: [
-          { title: { $regex: query, $options: 'i' } },
-          { category: { $regex: query, $options: 'i' } }
+          { title: { $regex: safeQuery, $options: 'i' } },
+          { category: { $regex: safeQuery, $options: 'i' } }
         ]
       }).limit(4);
 
@@ -35,10 +37,11 @@ exports.processChat = async (req, res) => {
 
     // INTENT: Peer Network (Experts)
     else if (query.includes("expert") || query.includes("person") || query.includes("help") || query.includes("mentor") || query.includes("knows") || query.includes("someone")) {
+      const safeQ = escapeRegex(query);
       const expertsFound = await User.find({ 
         $or: [
-          { skills: { $regex: query, $options: 'i' } },
-          { learningTrack: { $regex: query, $options: 'i' } }
+          { skills: { $regex: safeQ, $options: 'i' } },
+          { learningTrack: { $regex: safeQ, $options: 'i' } }
         ],
         role: 'student'
       }).limit(3);
