@@ -18,10 +18,17 @@ const chatRoutes = require('./routes/chatRoutes');
 
 dotenv.config();
 
-// Connect to Database
-connectDB();
-
 const app = express();
+
+// Connect to Database — awaited before first request via middleware
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    res.status(503).json({ message: 'Database unavailable. Please try again later.' });
+  }
+});
 
 // Middleware
 app.use(cors({
